@@ -20,13 +20,13 @@ function App() {
           <p className="text-xl text-gray-600 text-center mb-8">
             Secure Document Sharing System
           </p>
-          
+
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-800">System Status</h2>
               <span className="text-sm text-gray-500">{apiStatus}</span>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
               <div className="border rounded-lg p-6">
                 <h3 className="font-semibold text-lg mb-3 text-indigo-600">Core Features</h3>
@@ -39,7 +39,7 @@ function App() {
                   <li>✓ Access logs</li>
                 </ul>
               </div>
-              
+
               <div className="border rounded-lg p-6">
                 <h3 className="font-semibold text-lg mb-3 text-indigo-600">Tech Stack</h3>
                 <ul className="space-y-2 text-gray-700">
