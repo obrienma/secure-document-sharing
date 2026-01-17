@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import pool from './db/database';
 import { initializeDatabase } from './db/init';
 import authRoutes from './auth/auth.routes';
+import documentsRoutes from './documents/documents.routes';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/documents', documentsRoutes);
 
 // Health check
 app.get('/health', async (req, res) => {

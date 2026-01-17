@@ -9,7 +9,7 @@ export interface AuthRequest extends Request {
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'No token provided' });
     }
@@ -24,7 +24,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     const decoded = jwt.verify(token, secret) as { userId: number; email: string };
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
-    
+
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
