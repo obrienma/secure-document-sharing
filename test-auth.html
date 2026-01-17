@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocShare Auth Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .response.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .response.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .token-display {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            word-break: break-all;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .flex {
+            display: flex;
+            gap: 12px;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            color: #004085;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 DocShare Auth Test</h1>
+        
+        <div class="info">
+            <strong>API Base URL:</strong> http://localhost:3001<br>
+            <strong>Status:</strong> <span id="status">Checking...</span>
+        </div>
+
+        <!-- Register -->
+        <div class="card">
+            <h2>📝 Register New User</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password (min 8 chars)</label>
+                    <input type="password" id="regPassword" placeholder="********" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            <div id="registerResponse"></div>
+        </div>
+
+        <!-- Login -->
+        <div class="card">
+            <h2>🔐 Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="user@example.com" value="amanda@test.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="********" value="password123" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <div id="loginResponse"></div>
+        </div>
+
+        <!-- Protected Route -->
+        <div class="card">
+            <h2>👤 Get Current User (Protected)</h2>
+            <p style="color: #666; font-size: 14px; margin-bottom: 12px;">
+                Requires authentication token from login
+            </p>
+            <button id="getMeBtn" disabled>Get My Info</button>
+            <div id="meResponse"></div>
+        </div>
+
+        <!-- Token Display -->
+        <div class="card" id="tokenCard" style="display: none;">
+            <h2>🎫 Current Token</h2>
+            <div class="token-display" id="tokenDisplay"></div>
+            <button onclick="clearToken()" style="margin-top: 12px; background: #dc3545;">Clear Token</button>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = null;
+
+        // Check API status
+        async function checkStatus() {
+            try {
+                const res = await fetch('http://localhost:3001/health');
+                const data = await res.json();
+                document.getElementById('status').innerHTML = 
+                    `<span style="color: #28a745;">✓ Connected</span> (DB: ${data.database})`;
+            } catch (err) {
+                document.getElementById('status').innerHTML = 
+                    '<span style="color: #dc3545;">✗ Offline</span>';
+            }
+        }
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const responseDiv = document.getElementById('registerResponse');
+            
+            try {
+                const res = await fetch('http://localhost:3001/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('regEmail').value,
+                        password: document.getElementById('regPassword').value,
+                        fullName: document.getElementById('regName').value
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                    
+                    if (data.token) {
+                        setToken(data.token);
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + err.message;
+            }
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const responseDiv = document.getElementById('loginResponse');
+            
+            try {
+                const res = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('loginEmail').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                    
+                    if (data.token) {
+                        setToken(data.token);
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + err.message;
+            }
+        });
+
+        // Get Me
+        document.getElementById('getMeBtn').addEventListener('click', async () => {
+            const responseDiv = document.getElementById('meResponse');
+            
+            if (!currentToken) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'No token available. Please login first.';
+                return;
+            }
+            
+            try {
+                const res = await fetch('http://localhost:3001/api/auth/me', {
+                    headers: { 
+                        'Authorization': `Bearer ${currentToken}`
+                    }
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + err.message;
+            }
+        });
+
+        function setToken(token) {
+            currentToken = token;
+            document.getElementById('getMeBtn').disabled = false;
+            document.getElementById('tokenCard').style.display = 'block';
+            document.getElementById('tokenDisplay').textContent = token;
+        }
+
+        function clearToken() {
+            currentToken = null;
+            document.getElementById('getMeBtn').disabled = true;
+            document.getElementById('tokenCard').style.display = 'none';
+            document.getElementById('tokenDisplay').textContent = '';
+        }
+
+        // Check status on load
+        checkStatus();
+    </script>
+</body>
+</html>

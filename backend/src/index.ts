@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import pool from './db/database';
 import { initializeDatabase } from './db/init';
+import authRoutes from './auth/auth.routes';
 
 dotenv.config();
 
@@ -16,20 +17,23 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Routes
+app.use('/api/auth', authRoutes);
+
 // Health check
 app.get('/health', async (req, res) => {
   try {
     // Check database connection
     const result = await pool.query('SELECT NOW()');
-    res.json({ 
-      status: 'ok', 
+    res.json({
+      status: 'ok',
       timestamp: new Date().toISOString(),
       database: 'connected',
       db_time: result.rows[0].now
     });
   } catch (error) {
-    res.status(503).json({ 
-      status: 'error', 
+    res.status(503).json({
+      status: 'error',
       timestamp: new Date().toISOString(),
       database: 'disconnected',
       error: error instanceof Error ? error.message : 'Unknown error'
@@ -48,14 +52,14 @@ app.get('/db/stats', async (req, res) => {
     const userCount = await pool.query('SELECT COUNT(*) FROM users');
     const docCount = await pool.query('SELECT COUNT(*) FROM documents');
     const linkCount = await pool.query('SELECT COUNT(*) FROM shared_links');
-    
+
     res.json({
       users: parseInt(userCount.rows[0].count),
       documents: parseInt(docCount.rows[0].count),
       shared_links: parseInt(linkCount.rows[0].count)
     });
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch stats',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
@@ -67,7 +71,7 @@ async function startServer() {
   try {
     // Initialize database schema
     await initializeDatabase();
-    
+
     // Start server
     app.listen(PORT, () => {
       console.log(`🚀 Backend server running on port ${PORT}`);
