@@ -6,6 +6,8 @@ import pool from './db/database';
 import { initializeDatabase } from './db/init';
 import authRoutes from './auth/auth.routes';
 import documentsRoutes from './documents/documents.routes';
+import linksRoutes from './links/links.routes';
+import shareRoutes from './share/share.routes';
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentsRoutes);
+app.use('/api/links', linksRoutes);
+app.use('/share', shareRoutes); // Public route
 
 // Health check
 app.get('/health', async (req, res) => {
