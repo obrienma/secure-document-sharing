@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { documentsAPI, Document } from '../services/documents';
 import UploadModal from '../components/UploadModal';
+import ShareModal from '../components/ShareModal';
 import DocumentCard from '../components/DocumentCard';
 
 export default function Dashboard() {
@@ -9,6 +10,8 @@ export default function Dashboard() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -42,17 +45,18 @@ export default function Dashboard() {
   };
 
   const handleShare = (document: Document) => {
-    alert(`Share feature coming soon for: ${document.filename}`);
+    setSelectedDocument(document);
+    setIsShareModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header userName={user?.full_name || ''} onLogout={logout} />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DashboardHeader 
-          documentCount={documents.length} 
-          onUploadClick={() => setIsUploadModalOpen(true)} 
+        <DashboardHeader
+          documentCount={documents.length}
+          onUploadClick={() => setIsUploadModalOpen(true)}
         />
 
         {error && <ErrorMessage message={error} />}
@@ -62,10 +66,10 @@ export default function Dashboard() {
         ) : documents.length === 0 ? (
           <EmptyState onUploadClick={() => setIsUploadModalOpen(true)} />
         ) : (
-          <DocumentGrid 
-            documents={documents} 
-            onDelete={handleDelete} 
-            onShare={handleShare} 
+          <DocumentGrid
+            documents={documents}
+            onDelete={handleDelete}
+            onShare={handleShare}
           />
         )}
       </main>
@@ -75,6 +79,18 @@ export default function Dashboard() {
         onClose={() => setIsUploadModalOpen(false)}
         onUpload={handleUpload}
       />
+
+      {selectedDocument && (
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => {
+            setIsShareModalOpen(false);
+            setSelectedDocument(null);
+          }}
+          documentId={selectedDocument.id}
+          documentName={selectedDocument.filename}
+        />
+      )}
     </div>
   );
 }
@@ -154,13 +170,13 @@ function EmptyState({ onUploadClick }: { onUploadClick: () => void }) {
   );
 }
 
-function DocumentGrid({ 
-  documents, 
-  onDelete, 
-  onShare 
-}: { 
-  documents: Document[]; 
-  onDelete: (id: number) => void; 
+function DocumentGrid({
+  documents,
+  onDelete,
+  onShare
+}: {
+  documents: Document[];
+  onDelete: (id: number) => void;
   onShare: (doc: Document) => void;
 }) {
   return (

@@ -62,7 +62,7 @@ export default function Register() {
           </SubmitButton>
         </form>
 
-        <AuthFooter 
+        <AuthFooter
           text="Already have an account?"
           linkText="Sign in"
           linkTo="/login"
@@ -89,14 +89,14 @@ function ErrorAlert({ message }: { message: string }) {
   );
 }
 
-function FormInput({ 
-  id, 
-  label, 
-  type, 
-  value, 
-  onChange, 
-  placeholder 
-}: { 
+function FormInput({
+  id,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder
+}: {
   id: string;
   label: string;
   type: string;

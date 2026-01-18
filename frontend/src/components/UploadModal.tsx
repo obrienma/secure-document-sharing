@@ -48,22 +48,22 @@ export default function UploadModal({ isOpen, onClose, onUpload }: UploadModalPr
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
         <ModalHeader onClose={onClose} disabled={isUploading} />
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <ErrorBanner message={error} />}
-          
-          <FileInput 
-            file={file} 
+
+          <FileInput
+            file={file}
             fileInputRef={fileInputRef}
-            onChange={handleFileChange} 
+            onChange={handleFileChange}
           />
-          
-          <DescriptionInput 
-            value={description} 
-            onChange={setDescription} 
+
+          <DescriptionInput
+            value={description}
+            onChange={setDescription}
           />
-          
-          <FormActions 
+
+          <FormActions
             onCancel={onClose}
             isUploading={isUploading}
             hasFile={!!file}
@@ -97,12 +97,12 @@ function ErrorBanner({ message }: { message: string }) {
   );
 }
 
-function FileInput({ 
-  file, 
-  fileInputRef, 
-  onChange 
-}: { 
-  file: File | null; 
+function FileInput({
+  file,
+  fileInputRef,
+  onChange
+}: {
+  file: File | null;
   fileInputRef: React.RefObject<HTMLInputElement>;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
@@ -151,13 +151,13 @@ function DescriptionInput({ value, onChange }: { value: string; onChange: (val: 
   );
 }
 
-function FormActions({ 
-  onCancel, 
-  isUploading, 
-  hasFile 
-}: { 
-  onCancel: () => void; 
-  isUploading: boolean; 
+function FormActions({
+  onCancel,
+  isUploading,
+  hasFile
+}: {
+  onCancel: () => void;
+  isUploading: boolean;
   hasFile: boolean;
 }) {
   return (

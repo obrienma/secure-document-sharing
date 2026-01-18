@@ -29,9 +29,9 @@ export interface CreateDocumentData {
 export class DocumentsService {
   static async createDocument(data: CreateDocumentData): Promise<Document> {
     const result = await pool.query(
-      `INSERT INTO documents 
-       (user_id, filename, original_filename, file_path, file_size, mime_type, description) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      `INSERT INTO documents
+       (user_id, filename, original_filename, file_path, file_size, mime_type, description)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [
         data.userId,
@@ -49,8 +49,8 @@ export class DocumentsService {
 
   static async getUserDocuments(userId: number): Promise<Document[]> {
     const result = await pool.query(
-      `SELECT * FROM documents 
-       WHERE user_id = $1 AND is_deleted = false 
+      `SELECT * FROM documents
+       WHERE user_id = $1 AND is_deleted = false
        ORDER BY created_at DESC`,
       [userId]
     );
@@ -60,7 +60,7 @@ export class DocumentsService {
 
   static async getDocumentById(documentId: number, userId: number): Promise<Document | null> {
     const result = await pool.query(
-      `SELECT * FROM documents 
+      `SELECT * FROM documents
        WHERE id = $1 AND user_id = $2 AND is_deleted = false`,
       [documentId, userId]
     );
@@ -74,9 +74,9 @@ export class DocumentsService {
     updates: { description?: string }
   ): Promise<Document | null> {
     const result = await pool.query(
-      `UPDATE documents 
+      `UPDATE documents
        SET description = COALESCE($1, description)
-       WHERE id = $2 AND user_id = $3 AND is_deleted = false 
+       WHERE id = $2 AND user_id = $3 AND is_deleted = false
        RETURNING *`,
       [updates.description, documentId, userId]
     );
@@ -87,9 +87,9 @@ export class DocumentsService {
   static async deleteDocument(documentId: number, userId: number): Promise<boolean> {
     // Soft delete - mark as deleted
     const result = await pool.query(
-      `UPDATE documents 
-       SET is_deleted = true 
-       WHERE id = $1 AND user_id = $2 
+      `UPDATE documents
+       SET is_deleted = true
+       WHERE id = $1 AND user_id = $2
        RETURNING *`,
       [documentId, userId]
     );
@@ -114,11 +114,11 @@ export class DocumentsService {
 
   static async getDocumentStats(userId: number) {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         COUNT(*) as total_documents,
         SUM(file_size) as total_size,
         COUNT(CASE WHEN created_at > NOW() - INTERVAL '7 days' THEN 1 END) as recent_uploads
-       FROM documents 
+       FROM documents
        WHERE user_id = $1 AND is_deleted = false`,
       [userId]
     );

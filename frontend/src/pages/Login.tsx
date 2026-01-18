@@ -28,8 +28,8 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <AuthHeader 
-          title="Sign in to your account" 
+        <AuthHeader
+          title="Sign in to your account"
         />
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -58,7 +58,7 @@ export default function Login() {
           </SubmitButton>
         </form>
 
-        <AuthFooter 
+        <AuthFooter
           text="Don't have an account?"
           linkText="Sign up"
           linkTo="/register"
@@ -85,14 +85,14 @@ function ErrorAlert({ message }: { message: string }) {
   );
 }
 
-function FormInput({ 
-  id, 
-  label, 
-  type, 
-  value, 
-  onChange, 
-  placeholder 
-}: { 
+function FormInput({
+  id,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder
+}: {
   id: string;
   label: string;
   type: string;
