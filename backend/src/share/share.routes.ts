@@ -5,10 +5,10 @@ const router = Router();
 
 // Public routes - no authentication required
 
-// Check link status
-router.get('/:token/status', ShareController.checkLinkStatus);
+// Verify access (returns document info if valid)
+router.post('/:token/verify', ShareController.verifyAccess);
 
-// Access shared document (view or download)
-router.post('/:token', ShareController.accessSharedDocument);
+// Download document
+router.post('/:token/download', ShareController.downloadDocument);
 
 export default router;

@@ -4,6 +4,141 @@ import fs from 'fs';
 import path from 'path';
 
 export class ShareController {
+  static async verifyAccess(req: Request, res: Response) {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+
+      // Get client info
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+
+      // Verify link access
+      const verification = await LinksService.verifyLinkAccess(token, password);
+
+      if (!verification.valid) {
+        // Log failed attempt if password was wrong
+        if (verification.link && password) {
+          await LinksService.recordAccess(
+            verification.link.id,
+            ipAddress,
+            userAgent,
+            'failed_password',
+            false
+          );
+        }
+
+        // Check if it requires password
+        if (verification.reason === 'Password required') {
+          return res.json({
+            success: false,
+            requiresPassword: true,
+            message: verification.reason,
+          });
+        }
+
+        return res.status(403).json({
+          success: false,
+          requiresPassword: false,
+          message: verification.reason,
+        });
+      }
+
+      const { link, document } = verification;
+
+      if (!link || !document) {
+        return res.status(404).json({
+          success: false,
+          message: 'Document not found',
+        });
+      }
+
+      // Record view access
+      await LinksService.recordAccess(
+        link.id,
+        ipAddress,
+        userAgent,
+        'view',
+        true
+      );
+
+      // Return document info
+      res.json({
+        success: true,
+        requiresPassword: false,
+        document: {
+          id: document.id,
+          filename: document.original_filename,
+          originalFilename: document.original_filename,
+          mimeType: document.mime_type,
+          fileSize: document.file_size,
+          description: document.description,
+        },
+        link: {
+          viewCount: link.view_count + 1,
+          maxViews: link.max_views,
+          expiresAt: link.expires_at,
+          allowDownload: link.allow_download,
+        },
+      });
+    } catch (error) {
+      console.error('Error verifying access:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to verify access',
+      });
+    }
+  }
+
+  static async downloadDocument(req: Request, res: Response) {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+
+      // Get client info
+      const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+
+      // Verify link access
+      const verification = await LinksService.verifyLinkAccess(token, password);
+
+      if (!verification.valid) {
+        return res.status(403).json({ error: verification.reason });
+      }
+
+      const { link, document } = verification;
+
+      if (!link || !document) {
+        return res.status(404).json({ error: 'Document not found' });
+      }
+
+      // Check download permission
+      if (!link.allow_download) {
+        return res.status(403).json({ error: 'Download not allowed for this link' });
+      }
+
+      // Check if file exists
+      if (!fs.existsSync(document.file_path)) {
+        return res.status(404).json({ error: 'File not found on server' });
+      }
+
+      // Record download access
+      await LinksService.recordAccess(
+        link.id,
+        ipAddress,
+        userAgent,
+        'download',
+        true
+      );
+
+      // Serve file
+      res.download(document.file_path, document.original_filename);
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      res.status(500).json({ error: 'Failed to download document' });
+    }
+  }
+
   static async accessSharedDocument(req: Request, res: Response) {
     try {
       const { token } = req.params;
