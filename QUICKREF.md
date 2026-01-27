@@ -282,8 +282,21 @@ docker compose exec docshare-db psql -U docshare_user -d docshare -c \
 
 ## 🚢 Production Deployment
 
+### Deploy to Render.com
+
+1. Push code to GitHub
+2. Go to [Render Dashboard](https://dashboard.render.com/)
+3. Create new Blueprint → Connect repository
+4. Render auto-deploys from `render.yaml`
+5. Initialize database:
+   ```bash
+   psql $DATABASE_URL -f backend/src/db/schema.sql
+   ```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete guide.
+
 **Pre-deployment checklist:**
-- [ ] Update `JWT_SECRET` in .env
+- [ ] Update `JWT_SECRET` in .env (min 32 chars)
 - [ ] Update `POSTGRES_PASSWORD` in .env
 - [ ] Set `NODE_ENV=production`
 - [ ] Configure HTTPS/SSL
@@ -304,6 +317,7 @@ docker compose exec docshare-db pg_dump -U docshare_user docshare > backup_$DATE
 ## 📚 Additional Resources
 
 - [README.md](README.md) - Full documentation
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Production deployment guide
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Detailed solutions
 - [Backend API](http://localhost:3000) - Swagger docs (coming soon)
 - [GitHub Issues](https://github.com/obrienma/secure-document-sharing/issues) - Report bugs

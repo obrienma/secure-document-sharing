@@ -276,8 +276,21 @@ This is a personal project, but suggestions and feedback are welcome!
 
 - **[Quick Reference](QUICKREF.md)** - Essential commands and quick tasks
 - **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
-- **[Installation Script](install.sh)** - Automated setup
+- **[Installation Script](install.sh)** - Automated setup- **[Deployment Guide](DEPLOYMENT.md)** - Deploy to Render.com or VPS
 
+## 🚀 Deployment
+
+### Deploy to Render.com
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+1. Click the button above or push your code to GitHub
+2. Sign up for [Render.com](https://render.com)
+3. Create a new Blueprint and connect your repository
+4. Render will automatically deploy all services from `render.yaml`
+5. Initialize the database schema (see [DEPLOYMENT.md](DEPLOYMENT.md))
+
+See the complete [Deployment Guide](DEPLOYMENT.md) for detailed instructions.
 ## 📝 License
 
 MIT
