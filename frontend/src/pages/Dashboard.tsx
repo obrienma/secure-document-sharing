@@ -100,8 +100,14 @@ function Header({ userName, onLogout }: { userName: string; onLogout: () => void
     <nav className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-8">
             <h1 className="text-xl font-bold text-gray-900">🔒 DocShare</h1>
+            <div className="flex space-x-4">
+              <button className="text-indigo-600 font-medium">Documents</button>
+              <a href="/links" className="text-gray-600 hover:text-gray-900">
+                Links
+              </a>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-gray-700">Welcome, {userName}</span>
