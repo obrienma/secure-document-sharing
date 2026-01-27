@@ -42,15 +42,37 @@ Users can upload sensitive documents (PDFs, images, etc.), generate secure share
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose installed
-- Node.js 20+ (for local development without Docker)
+- Docker 20.10+ and Docker Compose v2.0+
 - Git
 
-### Setup
+### Automated Installation
+
+The easiest way to get started is using the installation script:
+
+```bash
+# Clone the repository
+git clone https://github.com/obrienma/secure-document-sharing.git
+cd secure-document-sharing
+
+# Run the installation script
+./install.sh
+```
+
+The script will:
+- ✅ Check prerequisites (Docker, Docker Compose)
+- ✅ Set up environment variables
+- ✅ Build and start Docker containers
+- ✅ Initialize the database schema
+- ✅ Install all dependencies
+- ✅ Verify the installation
+
+### Manual Setup
+
+If you prefer to set up manually:
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/obrienma/secure-document-sharing.git
    cd doc-share
    ```
 
@@ -62,28 +84,98 @@ Users can upload sensitive documents (PDFs, images, etc.), generate secure share
 
 3. **Start with Docker Compose**
    ```bash
-   docker-compose up
+   docker compose up -d --build
    ```
 
-4. **Access the application**
+4. **Initialize the database**
+   ```bash
+   docker compose exec backend psql -h docshare-db -U docshare_user -d docshare < backend/src/db/schema.sql
+   ```
+
+5. **Install dependencies**
+   ```bash
+   docker compose exec backend npm install
+   docker compose exec frontend npm install
+   ```
+
+6. **Access the application**
    - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3001
+   - Backend API: http://localhost:3000
    - Database: localhost:5432
 
 ### Development Commands
 
 ```bash
 # Start all services
-docker-compose up
+docker compose up
 
 # Start in detached mode
-docker-compose up -d
+docker compose up -d
 
 # Stop all services
-docker-compose down
+docker compose down
 
 # Rebuild containers
-docker-compose up --build
+docker compose up --build
+
+# View logs
+docker compose logs -f
+
+# Run backend tests
+docker compose exec backend npm test
+
+# Run tests with coverage
+docker compose exec backend npm test -- --coverage
+
+# Access backend shell
+docker compose exec backend sh
+
+# Access database
+docker compose exec docshare-db psql -U docshare_user -d docshare
+```
+
+## 🧪 Testing
+
+The project includes comprehensive test coverage:
+
+**Test Suites:**
+- ✅ 6 test suites
+- ✅ 39 passing tests
+- ✅ 0 failures
+
+**Coverage:**
+- Auth Service: 100%
+- Share Service: 100%
+- Links Service: 73%
+- Documents Service: 72%
+- Controllers: 60%+
+
+**Running Tests:**
+```bash
+# All tests
+docker compose exec backend npm test
+
+# Watch mode
+docker compose exec backend npm test -- --watch
+
+# Coverage report
+docker compose exec backend npm test -- --coverage
+```
+
+**Test Structure:**
+```
+backend/src/
+├── auth/__tests__/
+│   ├── auth.service.test.ts (5 tests)
+│   └── auth.controller.test.ts (4 tests)
+├── links/__tests__/
+│   ├── links.service.test.ts (18 tests)
+│   └── links.controller.test.ts (5 tests)
+├── documents/__tests__/
+│   └── documents.service.test.ts (6 tests)
+└── share/__tests__/
+    └── share.service.test.ts (3 tests)
+```
 
 # View logs
 docker-compose logs -f
@@ -180,6 +272,12 @@ doc-share/
 
 This is a personal project, but suggestions and feedback are welcome!
 
+## � Documentation
+
+- **[Quick Reference](QUICKREF.md)** - Essential commands and quick tasks
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Installation Script](install.sh)** - Automated setup
+
 ## 📝 License
 
 MIT
@@ -187,3 +285,4 @@ MIT
 ## 👤 Author
 
 Built as a portfolio project demonstrating full-stack development with security best practices.
+
