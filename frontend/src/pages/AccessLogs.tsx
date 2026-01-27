@@ -29,7 +29,7 @@ export default function AccessLogs() {
         logsAPI.getLinkLogs(parseInt(linkId)),
         linksAPI.getAll(),
       ]);
-      
+
       setLogs(fetchedLogs);
       const foundLink = allLinks.find(l => l.id === parseInt(linkId));
       setLink(foundLink || null);
@@ -40,8 +40,8 @@ export default function AccessLogs() {
     }
   };
 
-  const filteredLogs = filterType === 'all' 
-    ? logs 
+  const filteredLogs = filterType === 'all'
+    ? logs
     : logs.filter(log => log.access_type === filterType);
 
   const successCount = logs.filter(l => l.success).length;
@@ -56,8 +56,8 @@ export default function AccessLogs() {
 
         {link && <LinkInfo link={link} />}
 
-        <PageHeader 
-          totalLogs={logs.length} 
+        <PageHeader
+          totalLogs={logs.length}
           successCount={successCount}
           failedCount={failedCount}
         />
@@ -148,12 +148,12 @@ function LinkInfo({ link }: { link: UserLink }) {
   );
 }
 
-function PageHeader({ 
-  totalLogs, 
-  successCount, 
-  failedCount 
-}: { 
-  totalLogs: number; 
+function PageHeader({
+  totalLogs,
+  successCount,
+  failedCount
+}: {
+  totalLogs: number;
   successCount: number;
   failedCount: number;
 }) {

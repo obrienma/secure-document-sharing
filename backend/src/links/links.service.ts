@@ -87,7 +87,7 @@ export class LinksService {
       [userId]
     );
 
-    return result.rows.map(row => ({
+    return result.rows.map((row: any) => ({
       id: row.id,
       documentId: row.document_id,
       filename: row.original_filename,
