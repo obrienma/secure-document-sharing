@@ -55,9 +55,9 @@ export class LinksService {
     }
 
     const result = await pool.query(
-      `INSERT INTO shared_links 
-       (document_id, user_id, link_token, password_hash, expires_at, max_views, allow_download) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      `INSERT INTO shared_links
+       (document_id, user_id, link_token, password_hash, expires_at, max_views, allow_download)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [
         data.documentId,
@@ -75,7 +75,7 @@ export class LinksService {
 
   static async getUserLinks(userId: number): Promise<any[]> {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         sl.*,
         d.original_filename,
         d.file_size,
@@ -172,8 +172,8 @@ export class LinksService {
   ): Promise<void> {
     // Record access log
     await pool.query(
-      `INSERT INTO access_logs 
-       (shared_link_id, ip_address, user_agent, access_type, success) 
+      `INSERT INTO access_logs
+       (shared_link_id, ip_address, user_agent, access_type, success)
        VALUES ($1, $2, $3, $4, $5)`,
       [linkId, ipAddress, userAgent, accessType, success]
     );
@@ -181,8 +181,8 @@ export class LinksService {
     // Update link stats if successful
     if (success && (accessType === 'view' || accessType === 'download')) {
       await pool.query(
-        `UPDATE shared_links 
-         SET view_count = view_count + 1, last_accessed = CURRENT_TIMESTAMP 
+        `UPDATE shared_links
+         SET view_count = view_count + 1, last_accessed = CURRENT_TIMESTAMP
          WHERE id = $1`,
         [linkId]
       );
@@ -210,9 +210,9 @@ export class LinksService {
     }
 
     const result = await pool.query(
-      `SELECT * FROM access_logs 
-       WHERE shared_link_id = $1 
-       ORDER BY accessed_at DESC 
+      `SELECT * FROM access_logs
+       WHERE shared_link_id = $1
+       ORDER BY accessed_at DESC
        LIMIT 100`,
       [linkId]
     );

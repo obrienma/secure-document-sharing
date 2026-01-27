@@ -17,14 +17,14 @@ export default function PublicShare() {
 
   const verifyAccess = async (pwd?: string) => {
     if (!token) return;
-    
+
     setIsLoading(true);
     setError('');
 
     try {
       const response = await shareAPI.verifyAccess(token, pwd);
       setData(response);
-      
+
       if (!response.success) {
         setError(response.message || 'Access denied');
       }
@@ -89,15 +89,15 @@ export default function PublicShare() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl">
         <Header />
-        
+
         {error && <ErrorBanner message={error} />}
-        
+
         <DocumentInfo document={data.document} link={data.link} />
-        
+
         {data.link?.allowDownload && (
           <DownloadButton onClick={handleDownload} isDownloading={isDownloading} />
         )}
-        
+
         <Footer viewCount={data.link?.viewCount} maxViews={data.link?.maxViews} />
       </div>
     </div>
@@ -261,7 +261,7 @@ function ExpirationWarning({ expiresAt }: { expiresAt: string }) {
 
   return (
     <div className={`mt-3 px-3 py-2 rounded text-sm ${
-      hoursLeft < 24 
+      hoursLeft < 24
         ? 'bg-red-50 text-red-700 border border-red-200'
         : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
     }`}>
