@@ -226,6 +226,7 @@ function LinkCard({
   onDelete: (id: number) => void;
   isExpired: boolean;
 }) {
+  const navigate = useNavigate();
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'short',
@@ -275,6 +276,12 @@ function LinkCard({
         </div>
 
         <div className="flex space-x-2 ml-4">
+          <button
+            onClick={() => navigate(`/links/${link.id}/logs`)}
+            className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200 transition-colors"
+          >
+            View Logs
+          </button>
           {!isExpired && (
             <button
               onClick={() => onCopy(link.linkToken)}

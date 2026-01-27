@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Links from './pages/Links';
+import AccessLogs from './pages/AccessLogs';
 import PublicShare from './pages/PublicShare';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Links />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/links/:linkId/logs"
+            element={
+              <ProtectedRoute>
+                <AccessLogs />
               </ProtectedRoute>
             }
           />
