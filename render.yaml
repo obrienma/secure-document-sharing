@@ -1,27 +1,10 @@
 services:
-  # PostgreSQL Database
-  - type: pserv
-    name: docshare-db
-    env: docker
-    plan: free
-    dockerfilePath: ./Dockerfile.postgres
-    envVars:
-      - key: POSTGRES_DB
-        value: docshare_db
-      - key: POSTGRES_USER
-        value: docshare
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-    disk:
-      name: docshare-db-data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 1
-
   # Backend API
   - type: web
     name: docshare-backend
     env: docker
     dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     plan: free
     healthCheckPath: /api/health
     envVars:
@@ -59,3 +42,10 @@ services:
           type: web
           name: docshare-backend
           property: host
+
+databases:
+  # PostgreSQL Database
+  - name: docshare-db
+    databaseName: docshare_db
+    user: docshare
+    plan: free

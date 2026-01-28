@@ -44,7 +44,7 @@ describe('AuthService', () => {
       });
 
       expect(mockBcrypt.hash).toHaveBeenCalledWith('password123', 10);
-      expect(mockPool.query).toHaveBeenCalledWith(
+      expect(mockPool.query).toHaveBeenCalledWith(D
         expect.stringContaining('INSERT INTO users'),
         ['test@example.com', 'hashed_password', 'Test User']
       );

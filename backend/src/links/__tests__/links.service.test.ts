@@ -220,7 +220,7 @@ describe('LinksService', () => {
         .mockResolvedValueOnce({ rows: [mockLink] } as any)
         // @ts-ignore
         .mockResolvedValueOnce({ rows: [mockDocument] } as any);
-      
+
       mockBcrypt.compare.mockResolvedValueOnce(true as never);
 
       const result = await LinksService.verifyLinkAccess('token123', 'correct_password');
