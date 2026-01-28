@@ -3,8 +3,7 @@ services:
   - type: web
     name: docshare-backend
     env: docker
-    dockerfilePath: Dockerfile
-    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
     plan: free
     healthCheckPath: /api/health
     envVars:
