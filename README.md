@@ -243,16 +243,16 @@ doc-share/
 - [x] Project setup with Docker
 - [x] Basic backend API structure
 - [x] Frontend skeleton with React + Tailwind
-- [ ] User registration and login
-- [ ] File upload functionality
-- [ ] Basic link generation
+- [x] User registration and login
+- [x] File upload functionality
+- [x] Basic link generation
 
 ### Phase 2: Core Features
-- [ ] Time-limited links
-- [ ] Password-protected links
-- [ ] Access permissions (view/download)
-- [ ] Access logs and analytics
-- [ ] User dashboard
+- [x] Time-limited links
+- [x] Password-protected links
+- [x] Access permissions (view/download)
+- [x] Access logs and analytics
+- [x] User dashboard
 
 ### Phase 3: Enhancements
 - [ ] Email notifications
