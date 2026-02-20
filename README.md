@@ -239,7 +239,7 @@ doc-share/
 
 ## 🎯 Roadmap
 
-### Phase 1: MVP (Current)
+### ✅ Phase 1: MVP
 - [x] Project setup with Docker
 - [x] Basic backend API structure
 - [x] Frontend skeleton with React + Tailwind
@@ -247,14 +247,14 @@ doc-share/
 - [x] File upload functionality
 - [x] Basic link generation
 
-### Phase 2: Core Features
+### ✅ Phase 2: Core Features
 - [x] Time-limited links
 - [x] Password-protected links
 - [x] Access permissions (view/download)
 - [x] Access logs and analytics
 - [x] User dashboard
 
-### Phase 3: Enhancements
+### ⏸️ Phase 3: Enhancements (Next)
 - [ ] Email notifications
 - [ ] Bulk file operations
 - [ ] Advanced analytics
@@ -296,6 +296,6 @@ See the complete [Deployment Guide](DEPLOYMENT.md) for detailed instructions.
 MIT
 
 ## 👤 Author
+Amanda O'Brien
 
 Built as a portfolio project demonstrating full-stack development with security best practices.
-
